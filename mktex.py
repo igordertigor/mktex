@@ -8,7 +8,7 @@ Create a latex template file that fulfills some basic requirements
 """
 
 P = optparse.OptionParser(
-        usage= "prog [options] <outputfilename>",
+        usage= "%prog [options] <outputfilename>",
         prog = "mktex",
         description = generalhelp
         )
@@ -37,6 +37,9 @@ P.add_option("-p","--private",
 P.add_option("-B","--beamer",
         action="store_true",
         help="generate a beamer presentation")
+P.add_option("-s","--soul",
+        action="store_true",
+        help="enable the soul package for highlighting comments")
 
 opts,args = P.parse_args()
 
@@ -66,6 +69,9 @@ elif opts.SIunits:
 
 if opts.graphicx:
     tex += "\\usepackage{graphicx}\n"
+
+if opts.soul:
+    tex += "\\usepackage{color,soul}\n\\sethlcolor{yellow}\n#\\renewcommand{\hl}[1]{}\n"
 
 if opts.bibliography=="apacite":
     tex += "\\usepackage[]{apacite}\n"
