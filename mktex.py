@@ -40,6 +40,9 @@ P.add_option("-B","--beamer",
 P.add_option("-s","--soul",
         action="store_true",
         help="enable the soul package for highlighting comments")
+P.add_option('-f','--fancy',
+        action="store_true",
+        help='use a more fancy header style')
 
 opts,args = P.parse_args()
 
@@ -71,7 +74,7 @@ if opts.graphicx:
     tex += "\\usepackage{graphicx}\n"
 
 if opts.soul:
-    tex += "\\usepackage{color,soul}\n\\sethlcolor{yellow}\n#\\renewcommand{\hl}[1]{}\n"
+    tex += "\\usepackage{color,soul}\n\\sethlcolor{yellow}\n%\\renewcommand{\hl}[1]{}\n"
 
 if opts.bibliography=="apacite":
     tex += "\\usepackage[]{apacite}\n"
@@ -84,40 +87,59 @@ else:
 
 tex += "\\usepackage[utf8]{inputenc}\n"
 
+if opts.fancy:
+    tex += r"""\usepackage{titlesec}
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \noindent{\Huge\sffamily\bfseries\@title}
+    \vspace{1em}\\
+    {\large\sffamily\@author}\hfill{\sffamily\@date}
+    \hrule
+    \vspace{1em}
+}
+\makeatother
+
+\titleformat{\section}{\large\sffamily}{\thesection}{1em}{}
+\titleformat{\subsection}{\sffamily\itshape}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0em}{0.5em}{0em}
+"""
+
 if opts.letter:
     tex += "\n"
     if opts.private:
         tex += "\\backaddress{Ingo Fründ $\\cdot$ Beusselstr. 88 $\\cdot$ 10553 Berlin}\n"
         tex += "\\address{Ingo Fründ\\\\\n  Beusselstr. 88\\\\\n  10553 Berlin}\n"
     else:
-        tex += "\\backaddress{\parbox{7cm}{\\sffamily\\centering "
-        tex += "  Ingo Fründ $\\cdot$ TU Berlin $\\cdot$ Fakultät IV\\\\\n"
-        tex += "  Sekretariat 6-4 $\\cdot$ Franklinstr. 28/29 $\\cdot$ "
-        tex +=    "10587 Berlin}}\n\n"
+        tex += "\\backaddress{\parbox{8cm}{\\sffamily\\centering "
+        tex += "  I. Fründ $\\cdot$ Center for Vision Research $\\cdot$ York University\\\\\n"
+        tex += "  4700 Keele St $\\cdot$ Toronto, ON $\\cdot$ "
+        tex +=    "Canada, M3J 1P3}}\n\n"
         if not opts.graphicx:
             tex += "\\usepackage{graphicx}\n"
         tex += "\\address{\n"
-        tex += "\\mbox{\\parbox{10cm}{\n"
-        tex += "  \\centering\n"
-        tex += "  \\textbf{\\LARGE Technische Universität Berlin}\\\\\n"
-        tex += "  \\normalsize Arbeitsgruppe Modellierung kognitiver Prozesse\n"
-        tex += "  }}\n"
+        # tex += "\\mbox{\\parbox{10cm}{\n"
+        # tex += "  \\centering\n"
+        # tex += "  \\textbf{\\LARGE York University}\\\\\n"
+        # tex += "  \\normalsize Center for Vision Research\n"
+        # tex += "  }}\n"
         tex += "  \\flushright\n"
         tex += "  \\parbox{5cm}{\n"
         tex += "    \\begin{center}\n"
-        tex += "      \\includegraphics[width=3cm]{/home/ingo/Latex/tu-logo}\n"
+        tex += "      \\includegraphics[width=6cm]{/home/ingo/Latex/YorkULogo}\n"
         tex += "    \\end{center}\n"
         tex += "    \\scriptsize\\sffamily\n"
         tex += "    Dr. Ingo Fründ\\\\\n"
-        tex += "    Technische Universität Berlin\\\\\n"
-        tex += "    Modellierung kognitiver Prozesse\\\\\n"
-        tex += "    Fakultät IV, Sekretariat 6-4\\\\\n"
-        tex += "    Franklinstr. 28/29, 10587 Berlin\\\\\n"
-        tex += "    http://www.cognition.tu-berlin.de/\\\\\n"
+        tex += "    Center for Vision Research\\\\\n"
+        tex += "    Computer Science Building\\\\\n"
+        tex += "    4700 Keele Street\\\\\n"
+        tex += "    Toronto, ON\\\\\n"
+        tex += "    Canada, M3J 1P3\\\\\n"
+        tex += "    http://www.ingofruend.net\\\\\n"
         tex += "  }\n"
         tex += "}\n\n"
     tex += "\\date{\\today}\n"
-    tex += "\\place{Berlin}\n"
+    tex += "\\place{Toronto}\n"
     tex += "\\signature{Ingo Fründ}\n"
 elif opts.article or opts.beamer:
     tex += "\n"
